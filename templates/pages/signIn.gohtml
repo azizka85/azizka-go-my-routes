@@ -1,0 +1,86 @@
+@{
+  import (
+    i18n "github.com/azizka85/azizka-go-i18n"
+  )
+
+  var pageRoot string
+  var lang string  
+
+  var authServiceComponent string
+
+  var translator *i18n.Translator
+}
+<div data-page="signin-page">
+  <div class="main-card">
+    <div class="card main-card-body">
+      <div class="card-body">
+        <h2 
+          data-title="main"
+          style="text-transform: uppercase; font-weight: lighter;"
+        >
+          @translator.Translate("Sign In", nil, nil, nil)
+        </h2>
+        <form method="post" class="mb-1">
+          <div class="form-item mb-1">
+            <label class="form-label">            
+              <input 
+                type="email" 
+                name="email" 
+                id="email" 
+                class="form-control" 
+                placeholder="Email*"
+                required                
+              >          
+              <span>
+                Email*
+              </span>
+            </label>          
+          </div>
+          <div class="form-item mb-1">
+            <label class="form-label">
+              <input 
+                type="password" 
+                name="password" 
+                id="password" 
+                class="form-control" 
+                placeholder='@translator.Translate("Password", nil, nil, nil)*'
+                required
+              >
+              <span 
+                id="password-label"
+              >
+                @translator.Translate("Password", nil, nil, nil)*
+              </span>
+            </label>          
+          </div>
+          <div style="text-align: right;" class="mb-1">
+            <a 
+              class="btn btn-light" 
+              href="@(pageRoot)@(lang)/sign-up" 
+              data-button="sign-up"
+            >
+              @translator.Translate("Sign Up", nil, nil, nil)
+            </a>
+          </div>
+          <div style="text-align: right;">
+            <button 
+              type="submit" 
+              class="btn btn-success"
+              data-button="sign-in"
+            >
+              @translator.Translate("Sign In", nil, nil, nil)
+            </button>
+            <a 
+              class="btn btn-danger" 
+              href="@(pageRoot)@(lang)"
+              data-button="cancel"
+            >
+              @translator.Translate("Cancel", nil, nil, nil)
+            </a>
+          </div>
+        </form>
+        @raw(authServiceComponent)
+      </div>
+    </div>
+  </div>  
+</div>

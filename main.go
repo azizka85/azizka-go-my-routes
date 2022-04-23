@@ -1,31 +1,42 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 
+	"github.com/azizka85/azizka-go-my-routes/home"
+	"github.com/azizka85/azizka-go-my-routes/oAuth"
 	"github.com/azizka85/azizka-go-my-routes/settings"
+	"github.com/azizka85/azizka-go-my-routes/signIn"
+	"github.com/azizka85/azizka-go-my-routes/signUp"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	port := 3000
+	godotenv.Load()
+
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+
+	if err != nil {
+		port = 3000
+	}
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/hello/{name:(?:Aziz|Ulugbek|Umid)}", func(w http.ResponseWriter, r *http.Request) {
-		/* vars := mux.Vars(r)
+	subRouter := router.
+		PathPrefix(settings.GlobalSettings.PageRoot).
+		Subrouter()
 
-		fmt.Fprintf(w, "Hello, %v!", vars["name"]) */
+	oAuth.AddRoutes(subRouter)
 
-		w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	signIn.AddRoutes(subRouter)
+	signUp.AddRoutes(subRouter)
 
-		data, _ := json.Marshal(settings.GlobalSettings)
-
-		fmt.Fprint(w, string(data))
-	})
+	home.AddRoutes(subRouter)
 
 	http.Handle("/", router)
 
