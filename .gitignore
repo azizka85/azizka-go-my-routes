@@ -20,6 +20,6 @@
 # Go workspace files
 go.work
 
-.env
+*.env
 
 data.db
