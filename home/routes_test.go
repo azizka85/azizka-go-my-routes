@@ -6,13 +6,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/azizka85/azizka-go-my-routes/settings"
+	"github.com/azizka85/azizka-go-my-routes/global"
 )
 
 func TestDefaultWithDefaultLanguage(t *testing.T) {
 	r := httptest.NewRequest(
 		http.MethodGet,
-		settings.GlobalSettings.PageRoot,
+		global.Settings.PageRoot,
 		nil,
 	)
 	w := httptest.NewRecorder()
@@ -46,7 +46,7 @@ func TestDefaultWithDefaultLanguage(t *testing.T) {
 func TestDefaultAjax(t *testing.T) {
 	r := httptest.NewRequest(
 		http.MethodGet,
-		settings.GlobalSettings.PageRoot+"?ajax=1&init=1",
+		global.Settings.PageRoot+"?ajax=1&init=1",
 		nil,
 	)
 	w := httptest.NewRecorder()
@@ -78,7 +78,7 @@ func TestDefaultAjax(t *testing.T) {
 
 	r = httptest.NewRequest(
 		http.MethodGet,
-		settings.GlobalSettings.PageRoot+"?ajax=1",
+		global.Settings.PageRoot+"?ajax=1",
 		nil,
 	)
 	w = httptest.NewRecorder()

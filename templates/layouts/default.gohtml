@@ -1,12 +1,16 @@
 @{
   import (
+    "encoding/json"
+
     i18n "github.com/azizka85/azizka-go-i18n"
+    "github.com/azizka85/azizka-go-my-routes/data"
   )
 
   var lang string
   var pageRoot string  
   var content string
 
+  var settings *data.Settings
   var translator *i18n.Translator
 }
 <!DOCTYPE html>
@@ -31,6 +35,15 @@
     </div>
   </div>
   <script>
+    @{
+      settingsTxt, err := json.Marshal(settings)
+
+      if err != nil {
+        settingsTxt = []byte("{}")
+      }
+    }
+    window.settings = @raw(string(settingsTxt));
+
     const splashElem = document.querySelector('.splash');
 
     splashElem?.classList.add('splash-open');

@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"net/http"
 	"net/url"
 
 	i18n "github.com/azizka85/azizka-go-i18n"
@@ -14,6 +15,8 @@ func RenderPage(
 	content string,
 	layoutNames []string,
 	query url.Values,
+	request *http.Request,
+	user *data.User,
 	settings *data.Settings,
 	translator *i18n.Translator,
 ) string {
@@ -21,11 +24,14 @@ func RenderPage(
 		switch layoutName {
 		case "main-layout":
 			content = layouts.Main(
-				query,
 				query.Has("main-layout-navigation"),
 				settings.PageRoot,
 				lang,
 				content,
+				query,
+				request,
+				user,
+				settings,
 				translator,
 			)
 		}
@@ -36,6 +42,7 @@ func RenderPage(
 			lang,
 			settings.PageRoot,
 			content,
+			settings,
 			translator,
 		)
 	}

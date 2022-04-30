@@ -1,17 +1,21 @@
 @{
   import (
     "net/url"
+    "net/http"
+    "github.com/azizka85/azizka-go-my-routes/data"
     "github.com/azizka85/azizka-go-my-routes/helpers"
     i18n "github.com/azizka85/azizka-go-i18n"
   )
-
-  var query url.Values
 
   var navigation bool  
   var pageRoot string
   var lang string  
   var content string
 
+  var query url.Values
+  var request *http.Request
+  var user *data.User
+  var settings *data.Settings
   var translator *i18n.Translator
 }
 <div data-layout="main-layout">
@@ -110,23 +114,34 @@
         </svg>                       
       </a>
     </div>
+    @{
+      photo := ""
+      fullName := ""
+
+      if user != nil {
+        photo = user.Photo
+        fullName = user.FullName
+      }
+
+      language, _ := settings.Languages[lang]      
+    }
     <div class="drawer-content">
       <div class="drawer-account-bar">
         <div class="drawer-account-bar-avatar">   
           <img 
-            src="<%= data.user?.photo %>" 
-            alt="<%= data.user?.fullName %>"
+            src="@photo" 
+            alt="@fullName"
             class="drawer-account-bar-avatar-photo"
-            <% if(!data.user) { %>
-              style="display: none"
-            <% } %>
+            @if user == nil {
+              @:style="display: none"
+            }
           >
           <svg 
             class="drawer-account-bar-avatar-icon" 
             viewBox="0 0 16 16"
-            <% if(data.user) { %>
-              style="display: none"
-            <% } %>
+            @if user != nil {
+              @:style="display: none"
+            }
           >
             <path 
               d="
@@ -141,21 +156,21 @@
           <a 
             href="#"
             data-content="user-name"
-            style="white-space: nowrap; overflow: hidden; <%= !data.user ? 'display: none' : '' %>"
+            style='white-space: nowrap; overflow: hidden; @(helpers.Condition(user == nil, "display: none", ""))'
           >
-            <%= data.user?.fullName %>
+            @fullName
           </a>
           <a 
             href="@(pageRoot)auth/sign-out?redirect=/@(lang)/sign-in" 
             data-content="sign-out"
-            style="white-space: nowrap; overflow: hidden; <%= !data.user ? 'display: none' : '' %>"
+            style='white-space: nowrap; overflow: hidden; @(helpers.Condition(user == nil, "display: none", ""))'
           >
             @translator.Translate("Sign Out", nil, nil, nil)
           </a>
           <a 
             href="@(pageRoot)@(lang)/sign-in" 
             data-content="sign-in-up"
-            style="white-space: nowrap; overflow: hidden; <%= data.user ? 'display: none' : '' %>"
+            style='white-space: nowrap; overflow: hidden; @(helpers.Condition(user != nil, "display: none", ""))'
           >
             @translator.Translate("Sign In/Up", nil, nil, nil)
           </a>
@@ -163,7 +178,7 @@
       </div>
       <div class="drawer-lang-bar">
         <img 
-          src="<%= data.languages[data.lang].image %>" 
+          src="@(pageRoot)@(language.Image)" 
           class="drawer-lang-bar-flag"
           data-image="lang"
         >
@@ -171,7 +186,7 @@
           <input type="checkbox">
           <div class="drawer-lang-bar-current">            
             <span data-content="lang">
-              <%= data.languages[data.lang].label %>            
+              @language.Label            
             </span> 
             <svg class="drawer-lang-bar-current-icon" viewBox="0 0 16 16">
               <path 
@@ -186,39 +201,19 @@
             <div class="drawer-lang-bar-current-progress"></div>
           </div>
           <div class="list" data-list="lang">
-            <a 
-              data-list-item="lang-kz"
-              class='list-item @(helpers.Condition(lang == "kz", "list-item-activated", ""))'
-              href="@(pageRoot)<%= helpers.changeLangPath(data.url, 'kz') %>"
-            >
-              <img 
-                src="@(pageRoot)images/flags/kz.svg" 
-                class="drawer-lang-bar-flag"
+            @for key, value := range settings.Languages {
+              <a 
+                data-list-item="lang-@(key)"
+                class='list-item @(helpers.Condition(lang == key, "list-item-activated", ""))'
+                href='@(pageRoot)@(helpers.ChangeRoutePath(request, query, "lang", key))'
               >
-              <%= data.languages['kz'].label %>
-            </a>
-            <a 
-              data-list-item="lang-ru"
-              class='list-item @(helpers.Condition(lang == "ru", "list-item-activated", ""))'
-              href="@(pageRoot)<%= helpers.changeLangPath(data.url, 'ru') %>"
-            >
-              <img 
-                src="@(pageRoot)images/flags/ru.svg" 
-                class="drawer-lang-bar-flag"
-              >
-              <%= data.languages['ru'].label %>
-            </a>
-            <a 
-              data-list-item="lang-en"
-              class='list-item @(helpers.Condition(lang == "en", "list-item-activated", ""))'
-              href="@(pageRoot)<%= helpers.changeLangPath(data.url, 'en') %>"
-            >
-              <img 
-                src="@(pageRoot)images/flags/en.svg" 
-                class="drawer-lang-bar-flag"
-              >
-              <%= data.languages['en'].label %>
-            </a>
+                <img 
+                  src="@(pageRoot)@(value.Image)" 
+                  class="drawer-lang-bar-flag"
+                >
+                @value.Label
+              </a>              
+            }            
           </div>
         </label>
       </div>

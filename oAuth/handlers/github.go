@@ -9,6 +9,8 @@ import (
 	"os"
 
 	"github.com/azizka85/azizka-go-my-routes/data"
+	"github.com/azizka85/azizka-go-my-routes/global"
+	"github.com/azizka85/azizka-go-my-routes/helpers"
 )
 
 type GitHub struct{}
@@ -51,6 +53,12 @@ func (gitHub *GitHub) Handle(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (gitHub *GitHub) Callback(w http.ResponseWriter, r *http.Request) error {
+	session, err := global.SessionStore.Get(r, global.SessionKey)
+
+	if err != nil {
+		return err
+	}
+
 	rq := r.URL.Query()
 
 	/* var state data.OAuthServiceRequestState
@@ -64,7 +72,7 @@ func (gitHub *GitHub) Callback(w http.ResponseWriter, r *http.Request) error {
 	lang := state.Lang
 
 	if lang == "" {
-		lang = settings.GlobalSettings.DefaultLanguage
+		lang = global.Settings.DefaultLanguage
 	}
 
 	ajax := false
@@ -73,7 +81,7 @@ func (gitHub *GitHub) Callback(w http.ResponseWriter, r *http.Request) error {
 		ajax = true
 	}
 
-	language, ok := settings.GlobalSettings.Languages[lang]
+	language, ok := global.Settings.Languages[lang]
 
 	translator := &i18n.Translator{}
 
@@ -170,6 +178,14 @@ func (gitHub *GitHub) Callback(w http.ResponseWriter, r *http.Request) error {
 	data, _ := json.Marshal(res)
 
 	fmt.Fprint(w, string(data))
+
+	helpers.OAuth(session, "github", res)
+
+	err = session.Save(r, w)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
