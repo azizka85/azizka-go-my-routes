@@ -3,6 +3,10 @@ github.com/PuerkitoBio/goquery v1.5.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBK
 github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
 github.com/azizka85/azizka-go-i18n v0.1.1 h1:OHWeIgXATpVeHLxDSxfgvo7fa4pJEAnekvr9Tm6vBL0=
 github.com/azizka85/azizka-go-i18n v0.1.1/go.mod h1:1K+6G9TzD83DutKHrlpbqZ0t999RxhY8OjniviVE+5M=
+github.com/azizka85/azizka-go-i18n v0.1.2 h1:ErQ4ijNAvjQIpLm0Ag7CMKUlTyIY+Yyd+d9Da2DBVSA=
+github.com/azizka85/azizka-go-i18n v0.1.2/go.mod h1:1K+6G9TzD83DutKHrlpbqZ0t999RxhY8OjniviVE+5M=
+github.com/azizka85/azizka-go-i18n v0.1.3 h1:QJS0UHQR8VAqXQXvjD851uw9FceS/Ldir5KpEt6flC4=
+github.com/azizka85/azizka-go-i18n v0.1.3/go.mod h1:1K+6G9TzD83DutKHrlpbqZ0t999RxhY8OjniviVE+5M=
 github.com/cockroachdb/apd v1.1.0/go.mod h1:8Sl8LxpKi29FqWXR16WEFZRNSz3SoPzUzeMeY4+DwBQ=
 github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
 github.com/coreos/go-systemd v0.0.0-20190719114852-fd7a80b32e1f/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=

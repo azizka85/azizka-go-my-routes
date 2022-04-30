@@ -63,7 +63,7 @@ func (gitHub *GitHub) Callback(w http.ResponseWriter, r *http.Request) error {
 
 	/* var state data.OAuthServiceRequestState
 
-	err := json.Unmarshal([]byte(rq.Get("state")), &state)
+	err = json.Unmarshal([]byte(rq.Get("state")), &state)
 
 	if err != nil {
 		return err

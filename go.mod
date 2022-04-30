@@ -3,7 +3,7 @@ module github.com/azizka85/azizka-go-my-routes
 go 1.18
 
 require (
-	github.com/azizka85/azizka-go-i18n v0.1.1 // indirect
+	github.com/azizka85/azizka-go-i18n v0.1.3 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/schema v1.2.0 // indirect

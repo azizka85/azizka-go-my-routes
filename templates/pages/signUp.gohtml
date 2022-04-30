@@ -18,7 +18,7 @@
           data-title="main"
           style="text-transform: uppercase; font-weight: lighter;"
         >
-          @translator.Translate("Sign Up", nil, nil, nil)
+          @translator.Translate("Sign Up")
         </h2>
         <form method="post" class="mb-1">
           <div class="form-item mb-1">
@@ -31,13 +31,13 @@
                 name="fullName" 
                 id="full-name" 
                 class="form-control" 
-                placeholder='@translator.Translate("Name", nil, nil, nil)*'
+                placeholder='@translator.Translate("Name")*'
                 required
               >
               <span 
                 id="full-name-label"
               >
-                @translator.Translate("Name", nil, nil, nil)*
+                @translator.Translate("Name")*
               </span>            
             </label>          
           </div>
@@ -69,13 +69,13 @@
                 name="password" 
                 id="password" 
                 class="form-control" 
-                placeholder='@translator.Translate("Password", nil, nil, nil)*'
+                placeholder='@translator.Translate("Password")*'
                 required
               >
               <span 
                 id="password-label"
               >
-                @translator.Translate("Password", nil, nil, nil)* 
+                @translator.Translate("Password")* 
               </span>
             </label>          
           </div>
@@ -94,7 +94,7 @@
               <span 
                 id="photo-label"
               >
-                @translator.Translate("Photo", nil, nil, nil)
+                @translator.Translate("Photo")
               </span>
             </label>          
           </div>
@@ -104,7 +104,7 @@
               href="@(pageRoot)@(lang)/sign-in"
               data-button="sign-in"
             >
-              @translator.Translate("Sign In", nil, nil, nil)
+              @translator.Translate("Sign In")
             </a>
           </div>
           <div style="text-align: right;">
@@ -113,14 +113,14 @@
               class="btn btn-success"
               data-button="sign-up"
             >
-              @translator.Translate("Sign Up", nil, nil, nil)
+              @translator.Translate("Sign Up")
             </button>
             <a 
               class="btn btn-danger" 
               href="@(pageRoot)@(lang)"
               data-button="cancel"
             >
-              @translator.Translate("Cancel", nil, nil, nil)
+              @translator.Translate("Cancel")
             </a>
           </div>
         </form>

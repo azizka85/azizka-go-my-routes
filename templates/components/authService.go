@@ -2,6 +2,7 @@ package components
 
 import (
 	"bytes"
+
 	i18n "github.com/azizka85/azizka-go-i18n"
 	"github.com/sipin/gorazor/gorazor"
 )
@@ -9,7 +10,7 @@ import (
 func AuthService(lang string, pageRoot string, translator *i18n.Translator) string {
 	var _buffer bytes.Buffer
 	_buffer.WriteString("\n<h3 \n  style=\"text-transform: uppercase; font-weight: lighter;\"\n  data-title=\"auth-service\"\n>\n  ")
-	_buffer.WriteString(gorazor.HTMLEscape(translator.Translate("Or use the service", nil, nil, nil)))
+	_buffer.WriteString(gorazor.HTMLEscape(translator.Translate("Or use the service")))
 	_buffer.WriteString("\n</h3>\n<div>\n  <a\n    href=\"")
 	_buffer.WriteString(gorazor.HTMLEscape((pageRoot)))
 	_buffer.WriteString("auth/service/github?lang=")

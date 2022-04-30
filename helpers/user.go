@@ -60,9 +60,6 @@ func SignIn(
 		return data.CreateActionError(
 			translator.Translate(
 				"User with this email and password doesn't exist",
-				nil,
-				nil,
-				nil,
 			),
 		)
 	}
@@ -87,27 +84,18 @@ func SignUp(
 		return data.CreateActionError(
 			translator.Translate(
 				"Name required",
-				nil,
-				nil,
-				nil,
 			),
 		)
 	} else if user.Email == "" {
 		return data.CreateActionError(
 			translator.Translate(
 				"Email required",
-				nil,
-				nil,
-				nil,
 			),
 		)
 	} else if user.Password == "" {
 		return data.CreateActionError(
 			translator.Translate(
 				"Password required",
-				nil,
-				nil,
-				nil,
 			),
 		)
 	} else {
@@ -117,9 +105,6 @@ func SignUp(
 			return data.CreateActionError(
 				translator.Translate(
 					"User with this email already exists",
-					nil,
-					nil,
-					nil,
 				),
 			)
 		} else {

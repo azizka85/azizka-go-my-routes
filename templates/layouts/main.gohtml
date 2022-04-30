@@ -165,14 +165,14 @@
             data-content="sign-out"
             style='white-space: nowrap; overflow: hidden; @(helpers.Condition(user == nil, "display: none", ""))'
           >
-            @translator.Translate("Sign Out", nil, nil, nil)
+            @translator.Translate("Sign Out")
           </a>
           <a 
             href="@(pageRoot)@(lang)/sign-in" 
             data-content="sign-in-up"
             style='white-space: nowrap; overflow: hidden; @(helpers.Condition(user != nil, "display: none", ""))'
           >
-            @translator.Translate("Sign In/Up", nil, nil, nil)
+            @translator.Translate("Sign In/Up")
           </a>
         </div>
       </div>

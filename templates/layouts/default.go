@@ -6,11 +6,12 @@ package layouts
 
 import (
 	"encoding/json"
+	"io"
+	"strings"
+
 	i18n "github.com/azizka85/azizka-go-i18n"
 	"github.com/azizka85/azizka-go-my-routes/data"
 	"github.com/sipin/gorazor/gorazor"
-	"io"
-	"strings"
 )
 
 // Default generates templates/layouts/default.gohtml
@@ -29,7 +30,7 @@ func RenderDefault(_buffer io.StringWriter, lang string, pageRoot string, conten
 	// Line: 17
 	_buffer.WriteString("\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>\n    ")
 	// Line: 23
-	_buffer.WriteString(gorazor.HTMLEscStr(translator.Translate("My Routes", nil, nil, nil)))
+	_buffer.WriteString(gorazor.HTMLEscStr(translator.Translate("My Routes")))
 	// Line: 23
 	_buffer.WriteString("\n  </title>\n  <link rel=\"icon\" type=\"image/png\" href='")
 	// Line: 25

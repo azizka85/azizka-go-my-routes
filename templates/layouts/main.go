@@ -5,14 +5,15 @@
 package layouts
 
 import (
-	i18n "github.com/azizka85/azizka-go-i18n"
-	"github.com/azizka85/azizka-go-my-routes/data"
-	"github.com/azizka85/azizka-go-my-routes/helpers"
-	"github.com/sipin/gorazor/gorazor"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	i18n "github.com/azizka85/azizka-go-i18n"
+	"github.com/azizka85/azizka-go-my-routes/data"
+	"github.com/azizka85/azizka-go-my-routes/helpers"
+	"github.com/sipin/gorazor/gorazor"
 )
 
 // Main generates templates/layouts/main.gohtml
@@ -104,7 +105,7 @@ func RenderMain(_buffer io.StringWriter, navigation bool, pageRoot string, lang 
 	// Line: 105
 	_buffer.WriteString("'\n          >\n            ")
 	// Line: 107
-	_buffer.WriteString(gorazor.HTMLEscStr(translator.Translate("Sign Out", nil, nil, nil)))
+	_buffer.WriteString(gorazor.HTMLEscStr(translator.Translate("Sign Out")))
 	// Line: 107
 	_buffer.WriteString("\n          </a>\n          <a \n            href=\"")
 	// Line: 109
@@ -118,7 +119,7 @@ func RenderMain(_buffer io.StringWriter, navigation bool, pageRoot string, lang 
 	// Line: 111
 	_buffer.WriteString("'\n          >\n            ")
 	// Line: 113
-	_buffer.WriteString(gorazor.HTMLEscStr(translator.Translate("Sign In/Up", nil, nil, nil)))
+	_buffer.WriteString(gorazor.HTMLEscStr(translator.Translate("Sign In/Up")))
 	// Line: 113
 	_buffer.WriteString("\n          </a>\n        </div>\n      </div>\n      <div class=\"drawer-lang-bar\">\n        <img \n          src=\"")
 	// Line: 118
