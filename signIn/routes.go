@@ -1,7 +1,6 @@
 package signIn
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -16,180 +15,118 @@ import (
 )
 
 func Default(w http.ResponseWriter, r *http.Request) {
-	session, err := global.SessionStore.Get(r, global.SessionKey)
+	lang,
+		ajax,
+		init,
+		query,
+		_,
+		user,
+		translator,
+		status,
+		err := helpers.ViewData(w, r)
 
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	} else {
-		vars := mux.Vars(r)
+	content := ""
 
-		lang, ok := vars["lang"]
-
-		if !ok {
-			lang = global.Settings.DefaultLanguage
-		}
-
-		language, ok := global.Settings.Languages[lang]
-
-		query := r.URL.Query()
-
-		ajax := query.Get("ajax")
-		init := query.Get("init")
-
-		if ok {
-			if ajax == "1" && init != "1" {
-				w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-
-				data, _ := json.Marshal(&global.Settings)
-
-				fmt.Fprint(w, string(data))
-			} else {
-				user := &data.User{}
-
-				count, err := helpers.GetUserInfoFromSession(
-					user,
-					session,
-					global.Db,
-				)
-
-				if err != nil {
-					fmt.Println(err)
-				} else if count == 0 {
-					user = nil
-				}
-
-				w.Header().Set("Content-Type", "text/html;charset=UTF-8")
-
-				fmt.Fprint(
-					w,
-					templates.RenderPage(
-						ajax == "1",
-						lang,
-						pages.SignIn(
-							global.Settings.PageRoot,
-							lang,
-							components.AuthService(
-								lang,
-								global.Settings.PageRoot,
-								language.Translator,
-							),
-							language.Translator,
-						),
-						[]string{},
-						query,
-						r,
-						user,
-						&global.Settings,
-						language.Translator,
-					),
-				)
-			}
-		} else {
-			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		}
+	if status == http.StatusOK {
+		content = templates.RenderPage(
+			ajax == "1",
+			lang,
+			pages.SignIn(
+				global.Settings.PageRoot,
+				lang,
+				components.AuthService(
+					lang,
+					global.Settings.PageRoot,
+					translator,
+				),
+				translator,
+			),
+			[]string{},
+			query,
+			r,
+			user,
+			&global.Settings,
+			translator,
+		)
 	}
+
+	helpers.RenderDataOrRedirect(
+		w,
+		r,
+		nil,
+		content,
+		ajax,
+		init,
+		"",
+		status,
+		err,
+	)
 }
 
-func postData(user *data.User, w http.ResponseWriter, r *http.Request) (int, error) {
-	session, err := global.SessionStore.Get(r, global.SessionKey)
+func Post(w http.ResponseWriter, r *http.Request) {
+	_,
+		ajax,
+		init,
+		_,
+		session,
+		_,
+		translator,
+		status,
+		err := helpers.ViewData(w, r)
 
-	if err != nil {
-		fmt.Println(err)
+	var user *data.User
 
-		return http.StatusInternalServerError, err
-	} else {
-		vars := mux.Vars(r)
+	if status == http.StatusOK {
+		user = &data.User{}
 
-		lang, ok := vars["lang"]
+		decoder := schema.NewDecoder()
 
-		if !ok {
-			lang = global.Settings.DefaultLanguage
-		}
+		r.ParseForm()
 
-		language, ok := global.Settings.Languages[lang]
+		err = decoder.Decode(user, r.PostForm)
 
-		if ok {
-			decoder := schema.NewDecoder()
+		if err != nil {
+			fmt.Println(err)
 
-			r.ParseForm()
-
-			err := decoder.Decode(user, r.PostForm)
+			status = http.StatusBadRequest
+		} else {
+			err = helpers.SignIn(
+				user.Email,
+				user.Password,
+				user,
+				translator,
+				session,
+				global.Db,
+			)
 
 			if err != nil {
 				fmt.Println(err)
 
-				return http.StatusBadRequest, err
+				status = http.StatusBadRequest
 			} else {
-				err = helpers.SignIn(
-					user.Email,
-					user.Password,
-					user,
-					language.Translator,
-					session,
-					global.Db,
-				)
+				err = session.Save(r, w)
 
 				if err != nil {
-					fmt.Println(err)
-
-					return http.StatusInternalServerError, err
+					status = http.StatusInternalServerError
 				} else {
-					err = session.Save(r, w)
-
-					if err != nil {
-						return http.StatusInternalServerError, err
-					} else {
-						return http.StatusOK, nil
-					}
+					status = http.StatusFound
 				}
 			}
-		} else {
-			return http.StatusNotFound, nil
 		}
 	}
-}
 
-func Post(w http.ResponseWriter, r *http.Request) {
-	var user data.User
-
-	query := r.URL.Query()
-
-	ajax := query.Get("ajax")
-
-	status, err := postData(&user, w, r)
-
-	if status != http.StatusOK {
-		var errorTxt string
-
-		if err == nil {
-			errorTxt = http.StatusText(status)
-		} else {
-			errorTxt = err.Error()
-		}
-
-		if ajax == "1" {
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-
-			http.Error(w, errorTxt, status)
-		} else {
-			// TODO: not ajax
-
-			w.Header().Set("Content-Type", "text/html;charset=UTF-8")
-		}
-	} else {
-		if ajax == "1" {
-			w.Header().Set("Content-Type", "application/json;charset=UTF-8")
-
-			data, _ := json.Marshal(&user)
-
-			fmt.Fprint(w, string(data))
-		} else {
-			// TODO: not ajax
-
-			w.Header().Set("Content-Type", "text/html;charset=UTF-8")
-		}
-	}
+	// TODO: change location
+	helpers.RenderDataOrRedirect(
+		w,
+		r,
+		user,
+		"",
+		ajax,
+		init,
+		"",
+		status,
+		err,
+	)
 }
 
 func AddRoutes(router *mux.Router) {

@@ -1,46 +1,46 @@
 package signOut
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/azizka85/azizka-go-my-routes/global"
 	"github.com/azizka85/azizka-go-my-routes/helpers"
 	"github.com/gorilla/mux"
 )
 
 func Default(w http.ResponseWriter, r *http.Request) {
-	session, err := global.SessionStore.Get(r, global.SessionKey)
+	_,
+		ajax,
+		init,
+		_,
+		session,
+		_,
+		_,
+		status,
+		err := helpers.ViewData(w, r)
 
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	} else {
-		query := r.URL.Query()
-
-		ajax := query.Get("ajax")
-
+	if status == http.StatusOK {
 		helpers.SignOut(session)
 		err = session.Save(r, w)
 
 		if err != nil {
-			if ajax == "1" {
-				w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			} else {
-				// TODO: not ajax
-			}
+			status = http.StatusInternalServerError
 		} else {
-			if ajax == "1" {
-				w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-
-				http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
-			} else {
-				// TODO: not ajax
-			}
+			status = http.StatusFound
 		}
 	}
+
+	// TODO: change location
+	helpers.RenderDataOrRedirect(
+		w,
+		r,
+		nil,
+		"",
+		ajax,
+		init,
+		"",
+		status,
+		err,
+	)
 }
 
 func AddRoutes(router *mux.Router) {

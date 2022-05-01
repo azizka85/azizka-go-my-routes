@@ -7,9 +7,18 @@ import (
 	"testing"
 
 	"github.com/azizka85/azizka-go-my-routes/global"
+	"github.com/azizka85/azizka-go-my-routes/mocks"
 )
 
 func TestDefaultWithDefaultLanguage(t *testing.T) {
+	router, db, err := mocks.PrepareForTesting()
+
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+
+	defer db.Close()
+
 	r := httptest.NewRequest(
 		http.MethodGet,
 		global.Settings.PageRoot,
@@ -17,13 +26,15 @@ func TestDefaultWithDefaultLanguage(t *testing.T) {
 	)
 	w := httptest.NewRecorder()
 
-	Default(w, r)
+	AddRoutes(router)
+
+	router.ServeHTTP(w, r)
 
 	res := w.Result()
 
 	defer res.Body.Close()
 
-	_, err := ioutil.ReadAll(res.Body)
+	_, err = ioutil.ReadAll(res.Body)
 
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
@@ -44,6 +55,14 @@ func TestDefaultWithDefaultLanguage(t *testing.T) {
 }
 
 func TestDefaultAjax(t *testing.T) {
+	router, db, err := mocks.PrepareForTesting()
+
+	if err != nil {
+		t.Errorf("expected error to be nil got %v", err)
+	}
+
+	defer db.Close()
+
 	r := httptest.NewRequest(
 		http.MethodGet,
 		global.Settings.PageRoot+"?ajax=1&init=1",
@@ -51,13 +70,15 @@ func TestDefaultAjax(t *testing.T) {
 	)
 	w := httptest.NewRecorder()
 
-	Default(w, r)
+	AddRoutes(router)
+
+	router.ServeHTTP(w, r)
 
 	res := w.Result()
 
 	defer res.Body.Close()
 
-	_, err := ioutil.ReadAll(res.Body)
+	_, err = ioutil.ReadAll(res.Body)
 
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
@@ -83,7 +104,9 @@ func TestDefaultAjax(t *testing.T) {
 	)
 	w = httptest.NewRecorder()
 
-	Default(w, r)
+	AddRoutes(router)
+
+	router.ServeHTTP(w, r)
 
 	res = w.Result()
 
