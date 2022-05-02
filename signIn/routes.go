@@ -91,8 +91,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 			status = http.StatusBadRequest
 		} else {
 			err = helpers.SignIn(
-				user.Email,
-				user.Password,
 				user,
 				translator,
 				session,

@@ -176,7 +176,7 @@ func TestPost(t *testing.T) {
 	}
 
 	if sessionCookie == nil {
-		t.Errorf("expected session to be set in cookie")
+		t.Errorf("expected 'session' to be set in cookie")
 	}
 
 	r.AddCookie(sessionCookie)

@@ -36,27 +36,35 @@ func GetUserInfoById(
 	return result.RowsAffected, result.Error
 }
 
+func LogIn(
+	user *data.User,
+	db *gorm.DB,
+) (int64, error) {
+	hash := md5.Sum([]byte(user.Password))
+	password := hex.EncodeToString(
+		hash[:],
+	)
+
+	result := db.
+		Select("id", "full_name", "photo").
+		Where(&data.User{
+			Email:    user.Email,
+			Password: password,
+		}).
+		Take(user)
+
+	return result.RowsAffected, result.Error
+}
+
 func SignIn(
-	email string,
-	password string,
 	user *data.User,
 	translator *i18n.Translator,
 	session *sessions.Session,
 	db *gorm.DB,
 ) error {
-	hash := md5.Sum([]byte(password))
+	count, err := LogIn(user, db)
 
-	result := db.
-		Select("id", "full_name", "photo").
-		Where(&data.User{
-			Email: email,
-			Password: hex.EncodeToString(
-				hash[:],
-			),
-		}).
-		Take(user)
-
-	if result.Error != nil || result.RowsAffected == 0 {
+	if err != nil || count == 0 {
 		return data.CreateActionError(
 			translator.Translate(
 				"User with this email and password doesn't exist",
@@ -69,6 +77,24 @@ func SignIn(
 	delete(session.Values, "oauth")
 
 	return nil
+}
+
+func CreateUser(
+	user *data.User,
+	db *gorm.DB,
+) (int64, error) {
+	password := user.Password
+	hash := md5.Sum([]byte(password))
+
+	user.Password = hex.EncodeToString(
+		hash[:],
+	)
+
+	result := db.Create(user)
+
+	user.Password = password
+
+	return result.RowsAffected, result.Error
 }
 
 func SignUp(
@@ -108,23 +134,14 @@ func SignUp(
 				),
 			)
 		} else {
-			password := user.Password
-			hash := md5.Sum([]byte(password))
+			_, err := CreateUser(user, db)
 
-			user.Password = hex.EncodeToString(
-				hash[:],
-			)
-
-			result := db.Create(user)
-
-			if result.Error != nil {
-				return result.Error
+			if err != nil {
+				return err
 			}
 
-			err := SignIn(
-				user.Email,
-				password,
-				&data.User{},
+			err = SignIn(
+				user,
 				translator,
 				session,
 				db,
